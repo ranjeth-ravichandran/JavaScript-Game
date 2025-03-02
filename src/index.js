@@ -1,6 +1,9 @@
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
+let lastTime = performance.now();
+let fps = 0;
+
 function randomInteger(max) {
     return Math.floor(Math.random() * (max + 1));
 }
@@ -157,13 +160,27 @@ document.addEventListener("keyup", (event) => {
     player.keys[event.key] = false;
 });
 
+function drawFPS() {
+    ctx.fillStyle = "black";
+    ctx.font = "16px Arial";
+    ctx.fillText(`FPS: ${fps.toFixed(1)}`, 10, 20);
+}
+
 function gameLoop() {
+
+    let now = performance.now();
+    let deltaTime = (now - lastTime) / 1000;
+    lastTime = now;
+    fps = 1 / deltaTime;
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     for (let square of squares) {
         square.draw();
     }
     player.update();
     player.draw();
+    drawFPS();
+
     requestAnimationFrame(gameLoop);
 }
 
